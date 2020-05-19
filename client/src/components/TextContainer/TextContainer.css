@@ -1,0 +1,48 @@
+.textContainer {
+  display: flex;
+  flex-direction: column;
+  margin-left: 50px;
+  color: black;
+  height: 70%;
+  /*justify-content: space-between;*/
+}
+.activeContainer {
+ /* display: flex;*/
+  align-items: center;
+  margin-bottom: 50%;
+}
+
+.activeItem {
+  display: flex;
+  align-items: center;
+}
+.currentIcon{
+  width: 40px;
+  padding: 6px;
+}
+
+.activeContainer img {
+  padding-left: 20px;
+}
+
+.textContainer {
+  margin-bottom: 0px;
+  font-size: medium;
+}
+
+.mt-20 {
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+.people{
+  margin-left: 50px;
+  width: 35px;
+}
+
+
+@media (min-width: 320px) and (max-width: 1200px) {
+  .textContainer {
+    display: none;
+  }
+}
