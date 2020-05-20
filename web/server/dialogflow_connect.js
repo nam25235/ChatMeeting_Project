@@ -22,7 +22,7 @@ const sessionPath = sessionClient.sessionPath(
 //  * Send a query to the dialogflow agent, and return the query result.
 //  * @param {string} projectId The project to be used
 //  */
-const packRequest = async (text) => {
+const packRequest = async (text, language) => {
   // The text query request.
   return {
     session: sessionPath,
@@ -31,7 +31,7 @@ const packRequest = async (text) => {
         // The query to send to the dialogflow agent
         text,
         // The language used by the client (en-US)
-        languageCode: "en-US",
+        languageCode: language,
       },
     },
   };
@@ -44,12 +44,21 @@ const callDialogflow = async (request) => {
     const responses = await sessionClient.detectIntent(request);
     console.log("Detected intent");
     const result = responses[0].queryResult;
-    console.log(`  Query: ${result.queryText}`);
-    console.log(`  Response: ${result.fulfillmentText}`);
-    if (result.intent) {
-      console.log(`  Intent: ${result.intent.displayName}`);
-    } else {
-      console.log(`  No intent matched.`);
+    console.log("queryResult result");
+
+    // use fulfillment
+    if (result.fulfillmentMessages[0]) {
+      console.log(result.fulfillmentMessages[0].text.text);
+    }
+    // just intent
+    else {
+      console.log(`  Query: ${result.queryText}`);
+      console.log(`  Response: ${result.fulfillmentText}`);
+      if (result.intent) {
+        console.log(`  Intent: ${result.intent.displayName}`);
+      } else {
+        console.log(`  No intent matched.`);
+      }
     }
   } catch (err) {
     console.log(err.message);
@@ -57,9 +66,17 @@ const callDialogflow = async (request) => {
 };
 
 const runConversation = async () => {
-  let request = await packRequest("Hi Dialogflow");
+  // config user information
+  let request = await packRequest(
+    "userid: 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
+    "en"
+  );
   await callDialogflow(request);
-  let request = await packRequest("What should I do?");
+  request = await packRequest("roomid: 4822", "en");
+  await callDialogflow(request);
+
+  // make appointment
+  request = await packRequest("นัดเวลา", "th");
   await callDialogflow(request);
 };
 
