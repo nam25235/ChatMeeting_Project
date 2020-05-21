@@ -1,5 +1,5 @@
 .messageBox {
-  background: #F3F3F3;
+  background: #f3f3f3;
   border-radius: 20px;
   padding: 5px 20px;
   color: white;
@@ -50,18 +50,26 @@
   justify-content: flex-end;
 }
 
-.colorWhite {
-  color: white;
+.fontCurrentUserColor {
+  color: #fffffe;
 }
 
-.colorDark {
-  color: #353535;
+.fontOtherUserColor {
+  color: #fffffe;
 }
 
-.backgroundBlue {
-  background: #2979FF;
+.fontBotColor {
+  color: #010101;
 }
 
-.backgroundLight {
-  background: #F3F3F3;
+.backgroundCurrentUserColor {
+  background: #7f5af0;
+}
+
+.backgroundOtherColor {
+  background: #2cb67d;
+}
+
+.backgroundBotColor {
+  background: #ebebeb;
 }
