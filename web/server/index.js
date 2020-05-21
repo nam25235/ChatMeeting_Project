@@ -3,14 +3,13 @@ const express = require("express");
 const socketio = require("socket.io");
 const cors = require("cors");
 
-const { generateMessage } = require("./utils/messages");
 const {
   addUser,
   removeUser,
   getUser,
   getUserInRoom,
-  getUsers,
 } = require("./utils/users");
+const { userinfo_config, talkto_dialogflow } = require("./dialogflow_connect");
 
 const BOT_NAME = "BOT";
 const router = require("./router");
@@ -25,31 +24,61 @@ app.use(router);
 // io refer to all-connected client
 io.on("connect", (socket) => {
   // listen join event
-  socket.on("join", ({ name, room }, callback) => {
+  socket.on("join", async ({ name, room }, callback) => {
+    // init userinfomation to be able to talk to dialogflow
+    const check_message = await userinfo_config(socket.id, room);
+    if (!check_message) {
+      return;
+    } else console.log(check_message);
+
+    // add this new user to system
     const { error, user } = addUser({ id: socket.id, name, room });
     if (error) return callback(error);
     socket.join(user.room);
-    // join message from bot
+
+    // joining message from bot
+    // -- only his browser panel
     socket.emit("message", {
       user: BOT_NAME,
       text: `${user.username}, welcome to room ${user.room}.`,
     });
+    // -- everyone browser panel excep this user
     socket.broadcast.to(user.room).emit("message", {
       user: BOT_NAME,
       text: `${user.username} has joined!`,
     });
+
+    // update 'all people online' infomation in client
     io.to(user.room).emit("roomData", {
       room: user.room,
       users: getUserInRoom(user.room),
     });
+
     callback();
   });
 
-  // listen sendMessage event
-  socket.on("sendMessage", (message, callback) => {
+  // listen sendMessage event of this user message
+  socket.on("sendMessage", async (message, callback) => {
     const user = getUser(socket.id);
 
+    // broadcast one user message to other user
     io.to(user.room).emit("message", { user: user.username, text: message });
+
+    // submit free date/time to dialogflow
+    const bot_response = await talkto_dialogflow(message, "th");
+    if (bot_response != "fallback")
+      if (message != "คำนวนเวลา") {
+        console.log("message != คำนวนเวลา");
+        socket.emit("message", {
+          user: BOT_NAME,
+          text: `${bot_response}`,
+        });
+      } else {
+        io.to(user.room).emit("message", {
+          user: BOT_NAME,
+          text: `${bot_response}`,
+        });
+      }
 
     callback();
   });
