@@ -66,7 +66,7 @@ io.on("connect", (socket) => {
 
     // submit free date/time to dialogflow
     const bot_response = await talkto_dialogflow(message, "th");
-    if (bot_response != "fallback")
+    if (bot_response != "fallback") {
       if (message != "คำนวนเวลา") {
         console.log("message != คำนวนเวลา");
         socket.emit("message", {
@@ -79,6 +79,7 @@ io.on("connect", (socket) => {
           text: `${bot_response}`,
         });
       }
+    }
 
     callback();
   });
