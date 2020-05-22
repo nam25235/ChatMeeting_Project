@@ -36,12 +36,6 @@ io.on("connect", (socket) => {
     if (error) return callback(error);
     socket.join(user.room);
 
-    // joining message from bot
-    // -- only his browser panel
-    socket.emit("message", {
-      user: BOT_NAME,
-      text: `${user.username}, welcome to room ${user.room}.`,
-    });
     // -- everyone browser panel excep this user
     socket.broadcast.to(user.room).emit("message", {
       user: BOT_NAME,
@@ -67,8 +61,7 @@ io.on("connect", (socket) => {
     // submit free date/time to dialogflow
     const bot_response = await talkto_dialogflow(message, "th");
     if (bot_response != "fallback") {
-      if (message != "คำนวนเวลา") {
-        console.log("message != คำนวนเวลา");
+      if (message != "คำนวนเวลา" && message != "หาเวลาว่างให้หน่อย") {
         socket.emit("message", {
           user: BOT_NAME,
           text: `${bot_response}`,

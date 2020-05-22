@@ -70,21 +70,6 @@ const callDialogflow = async (request) => {
   }
 };
 
-// const runConversation = async () => {
-//   // config user information
-//   let request = await packRequest(
-//     "userid: 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
-//     "en"
-//   );
-//   await callDialogflow(request);
-//   request = await packRequest("roomid: 4822", "en");
-//   await callDialogflow(request);
-
-//   // make appointment
-//   request = await packRequest("นัดเวลา", "th");
-//   await callDialogflow(request);
-// };
-
 const userinfo_config = async (userid, roomid) => {
   try {
     // config user information
